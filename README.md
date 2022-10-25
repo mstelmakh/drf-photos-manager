@@ -1,0 +1,1 @@
+# RESTful API for managing photos
