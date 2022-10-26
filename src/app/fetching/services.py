@@ -1,10 +1,15 @@
 import requests
 import shutil
-from django.core.exceptions import RequestAborted
+import json
 
+from django.core.exceptions import RequestAborted
+from django.conf import settings
 
 from photos.services import PHOTOS_DIR
 from photos.models import Photo
+
+
+DEFAULT_JSON_PATH = f"{settings.BASE_DIR.parent.parent}/photos.json"
 
 
 def fetch_photos(n=None):
@@ -17,6 +22,12 @@ def fetch_photos(n=None):
         raise RequestAborted()
     photos = r.json()
     return photos if not n else photos[:n]
+
+
+def read_photos_from_json(path: str, n: int = None):
+    with open(path, "r") as f:
+        data = json.load(f)
+    return data if not n else data[:n]
 
 
 def download_photo(filename: str, URL: str):
@@ -33,8 +44,7 @@ def get_photo_name_from_url(URL: str) -> str:
     return URL.partition(".com")[2] + ".png"
 
 
-def fetch_photos_to_database(n=None):
-    photos = fetch_photos(n)
+def import_photos(photos):
     for photo in photos:
         name = get_photo_name_from_url(photo["url"])
         download_photo(name, photo["url"])
@@ -45,3 +55,13 @@ def fetch_photos_to_database(n=None):
         }
         Photo.objects.create(**data)
     return photos
+
+
+def import_photos_from_api(n: int = None):
+    photos = fetch_photos(n)
+    return import_photos(photos)
+
+
+def import_photos_from_json(path: str = DEFAULT_JSON_PATH, n: int = None):
+    photos = read_photos_from_json(path, n)
+    return import_photos(photos)

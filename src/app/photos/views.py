@@ -5,7 +5,7 @@ from rest_framework.response import Response
 from photos.models import Photo
 from photos.serializers import PhotoSerializer
 
-from fetching.services import fetch_photos_to_database
+from fetching.services import import_photos_from_api, import_photos_from_json
 
 
 class PhotoView(viewsets.ModelViewSet):
@@ -13,11 +13,21 @@ class PhotoView(viewsets.ModelViewSet):
     queryset = Photo.objects.all()
 
 
-class FetchPhotos(views.APIView):
+class ImportPhotosFromApi(views.APIView):
 
     def get(self, request, n=None, *args, **kwargs):
         if n:
-            photos = fetch_photos_to_database(n)
+            photos = import_photos_from_api(n=n)
         else:
-            photos = fetch_photos_to_database()
+            photos = import_photos_from_api()
+        return Response(photos)
+
+
+class ImportPhotosFromJson(views.APIView):
+
+    def get(self, request, n=None, *args, **kwargs):
+        if n:
+            photos = import_photos_from_json(n=n)
+        else:
+            photos = import_photos_from_json()
         return Response(photos)
