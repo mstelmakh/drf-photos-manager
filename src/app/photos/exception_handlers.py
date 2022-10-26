@@ -19,6 +19,9 @@ def custom_exception_handler(exc, ctx):
     if isinstance(exc, RequestAborted):
         exc = exceptions.APIException()
 
+    if isinstance(exc, FileNotFoundError):
+        exc = exceptions.APIException()
+
     response = exception_handler(exc, ctx)
 
     # If unexpected error occurs (server error, etc.)
