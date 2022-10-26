@@ -9,7 +9,8 @@ class Command(BaseCommand):
 
     Args:
         f: Path to json file (optional).
-        start:
+        start: Offset of first photo to import (optional).
+        limit: Number of photos to import (optional).
     """
     help = "Imports photos from local JSON file."
 
