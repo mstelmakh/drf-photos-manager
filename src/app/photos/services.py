@@ -1,25 +1,32 @@
 from PIL import Image
 from pathlib import Path
 
+
 from django.conf import settings
+from django.core.exceptions import ValidationError
+
+# from photos.models import Photo
 
 
-def format_url(URL: str) -> str:
-    base_dir = Path(settings.BASE_DIR).parent.parent
-    return f"{base_dir}/photos{URL}"
+PHOTOS_DIR = f"{Path(settings.BASE_DIR).parent.parent}/photos"
 
 
 def get_size(URL: str) -> tuple[int, int]:
-    with Image.open(format_url(URL)) as img:
-        width, height = img.size
+    try:
+        with Image.open(f"{PHOTOS_DIR}{URL}") as img:
+            width, height = img.size
+    except FileNotFoundError:
+        raise ValidationError({"URL": "Invalid path."})
     return (width, height)
 
 
 def get_dominant_color(URL: str) -> str:
     # https://stackoverflow.com/a/61730849/19701843
-
     # Resize image to speed up processing
-    img = Image.open(format_url(URL))
+    try:
+        img = Image.open(f"{PHOTOS_DIR}{URL}")
+    except FileNotFoundError:
+        raise ValidationError({"URL": "Invalid path."})
     img = img.copy()
     img.thumbnail((100, 100))
 
@@ -33,3 +40,12 @@ def get_dominant_color(URL: str) -> str:
     dominant_color = palette[palette_index*3:palette_index*3+3]
 
     return '#' + ''.join(f'{i:02X}' for i in dominant_color)
+
+
+def save_analyzed_photo(f):
+    def wrapper(photo, **kwargs):
+        photo_size = get_size(photo.URL)
+        photo.width, photo.height = photo_size
+        photo.color = get_dominant_color(photo.URL)
+        return f(photo, **kwargs)
+    return wrapper
