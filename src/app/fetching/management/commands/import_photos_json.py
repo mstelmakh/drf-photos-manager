@@ -23,6 +23,9 @@ class Command(BaseCommand):
 
         self.stdout.write('Importing...')
 
-        import_photos_from_json(path, n)
+        if path:
+            import_photos_from_json(path, n)
+        else:
+            import_photos_from_json(n=n)
 
         self.stdout.write(self.style.SUCCESS('Done'))
