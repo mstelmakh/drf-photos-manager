@@ -3,6 +3,12 @@ from django.db import models
 
 
 class HexField(models.CharField):
+    """
+    Field used to store hexadecimal values
+    formatted to a string that starts with '#'
+    and has a length of 6 characters after it.
+    For example: #f0f0f0
+    """
 
     default_validators = []
 

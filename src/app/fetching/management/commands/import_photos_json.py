@@ -4,6 +4,13 @@ from django.core.management.base import BaseCommand
 
 
 class Command(BaseCommand):
+    """
+    Django CLI command used to import photos from local JSON file.
+
+    Args:
+        f: Path to json file (optional).
+        start:
+    """
     help = "Imports photos from local JSON file."
 
     def add_arguments(self, parser) -> None:
@@ -13,7 +20,7 @@ class Command(BaseCommand):
         parser.add_argument(
             '--start', type=int,
             default=0,
-            help="Starting index of photos to import (default: 0)."
+            help="Offset of first photo to import (default: 0)."
         )
         parser.add_argument(
             '--limit', type=int, help="Number of photos to import."

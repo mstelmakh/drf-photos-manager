@@ -14,6 +14,19 @@ DEFAULT_JSON_PATH = f"{settings.BASE_DIR.parent.parent}/photos.json"
 
 
 def fetch_photos(start: int = 0, limit: int = None):
+    """
+    Fetches photos from external API.
+
+    Args:
+        start: Offset of first fetched photo.
+        limit: Limit of number of photos.
+
+    Returns:
+        JSON encoded list of photos.
+
+    Raises:
+        RequestAborted: If there's an error occured while fetching photos.
+    """
     url = f"{API_URL}?_start={start}"
     if limit:
         url += f"&_limit={limit}"
@@ -34,12 +47,33 @@ def read_photos_from_json(
     start: int = 0,
     limit: int = None
 ) -> list[dict]:
+    """
+    Reads photos from JSON file.
+
+    Args:
+        path: Path to JSON file.
+        start: Offset of first photo.
+        limit: Limit of number of photos.
+
+    Returns:
+        JSON encoded list of photos.
+    """
     with open(path, "r") as f:
         data = json.load(f)
     return data[start:] if not limit else data[start:start+limit]
 
 
 def download_photo(filename: str, URL: str):
+    """
+    Downloads photo from given URL.
+
+    Args:
+        filename: Name of the saved photo (relative to /photos directory).
+        URL: URL to photo.
+
+    Raises:
+        RequestAborted: If there's an error occured while downloading photo.
+    """
     URL = URL + ".png"
     r = requests.get(URL, stream=True)
     if r.status_code != 200:
@@ -50,10 +84,25 @@ def download_photo(filename: str, URL: str):
 
 
 def get_photo_name_from_url(URL: str) -> str:
+    """
+    Formats photo name according to its URL.
+
+    Args:
+        URL: URL to photo.
+
+    Returns:
+        String containing everything that is after '.com' in URL + '.png'.
+    """
     return URL.partition(".com")[2] + ".png"
 
 
-def import_photos(photos: list[dict]) -> list[dict]:
+def import_photos(photos: list[dict]):
+    """
+    Saves given photos to database.
+
+    Args:
+        photos: JSON encoded list of photos to save.
+    """
     for photo in photos:
         name = get_photo_name_from_url(photo["url"])
         download_photo(name, photo["url"])
@@ -63,14 +112,25 @@ def import_photos(photos: list[dict]) -> list[dict]:
             "URL": name,
         }
         Photo.objects.create(**data)
-    return photos
 
 
 def import_photos_from_api(
     start: int = 0, limit: int = None
 ) -> list[dict]:
+    """
+    Imports photos from external API to database.
+
+    Args:
+        URL: URL to photo.
+        start: Offset of first fetched photo.
+        limit: Limit of number of photos.
+
+    Returns:
+        JSON encoded list of saved photos.
+    """
     photos = fetch_photos(start, limit)
-    return import_photos(photos)
+    import_photos(photos)
+    return photos
 
 
 def import_photos_from_json(
@@ -78,5 +138,17 @@ def import_photos_from_json(
     start: int = 0,
     limit: int = None
 ) -> list[dict]:
+    """
+    Imports photos from JSON file to database.
+
+    Args:
+        path: Path to JSON file.
+        start: Offset of first photo.
+        limit: Limit of number of photos.
+
+    Returns:
+        JSON encoded list of saved photos.
+    """
     photos = read_photos_from_json(path, start, limit)
-    return import_photos(photos)
+    import_photos(photos)
+    return photos

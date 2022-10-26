@@ -14,7 +14,12 @@ class PhotoView(viewsets.ModelViewSet):
 
 
 class ImportPhotosFromApi(views.APIView):
-
+    """
+    View used to import photos from external api.
+    Only GET method supported.
+    Takes one argument - number of photos to import,
+    if no argument is provided, imports all available photos.
+    """
     def get(self, request, n=None, *args, **kwargs):
         if n:
             photos = import_photos_from_api(n=n)
@@ -24,7 +29,12 @@ class ImportPhotosFromApi(views.APIView):
 
 
 class ImportPhotosFromJson(views.APIView):
-
+    """
+    View used to import photos from JSON file.
+    Only GET method supported.
+    Takes one argument - number of photos to import,
+    if no argument is provided, imports all available photos.
+    """
     def get(self, request, n=None, *args, **kwargs):
         if n:
             photos = import_photos_from_json(n=n)
