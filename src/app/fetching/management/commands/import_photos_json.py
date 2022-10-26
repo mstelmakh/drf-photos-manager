@@ -11,21 +11,26 @@ class Command(BaseCommand):
             '--f', type=str, help="Path to json file."
         )
         parser.add_argument(
-            '--n', type=int, help="Number of photos to import."
+            '--start', type=int,
+            default=0,
+            help="Starting index of photos to import (default: 0)."
+        )
+        parser.add_argument(
+            '--limit', type=int, help="Number of photos to import."
         )
 
     def handle(self, *args, **options):
-        path, n = None, None
-        if options["n"]:
-            n = options["n"]
+        path, limit = None, None
+        if options["limit"]:
+            limit = options["limit"]
         if options["f"]:
             path = options["f"]
 
         self.stdout.write('Importing...')
 
         if path:
-            import_photos_from_json(path, n)
+            import_photos_from_json(path, options["start"], limit)
         else:
-            import_photos_from_json(n=n)
+            import_photos_from_json(start=options["start"], limit=limit)
 
         self.stdout.write(self.style.SUCCESS('Done'))
