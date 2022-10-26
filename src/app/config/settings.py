@@ -41,6 +41,7 @@ INSTALLED_APPS = [
     'rest_framework',
 
     'photos.apps.PhotosConfig',
+    'fetching',
 ]
 
 MIDDLEWARE = [
@@ -103,6 +104,9 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
+REST_FRAMEWORK = {
+    'EXCEPTION_HANDLER': 'photos.exception_handlers.custom_exception_handler',
+}
 
 # Internationalization
 # https://docs.djangoproject.com/en/4.1/topics/i18n/
