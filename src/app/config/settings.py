@@ -98,7 +98,7 @@ AUTH_PASSWORD_VALIDATORS = [
 ]
 
 REST_FRAMEWORK = {
-    'EXCEPTION_HANDLER': 'photos.exception_handlers.custom_exception_handler',
+    'EXCEPTION_HANDLER': 'config.exception_handlers.custom_exception_handler',
 }
 
 # Internationalization

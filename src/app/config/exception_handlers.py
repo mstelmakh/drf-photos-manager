@@ -10,6 +10,7 @@ from rest_framework.serializers import as_serializer_error
 
 
 def custom_exception_handler(exc, ctx):
+    """Translates Django exceptions occured in services to DRF ones."""
     if isinstance(exc, DjangoValidationError):
         exc = exceptions.ValidationError(as_serializer_error(exc))
 
