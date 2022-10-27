@@ -1,6 +1,7 @@
 import requests
 import shutil
 import json
+import os
 
 from django.core.exceptions import RequestAborted
 from django.conf import settings
@@ -10,7 +11,9 @@ from photos.models import Photo
 
 
 API_URL = "https://jsonplaceholder.typicode.com/photos"
-DEFAULT_JSON_PATH = f"{settings.BASE_DIR.parent.parent}/photos.json"
+DEFAULT_JSON_PATH = os.path.join(
+    settings.BASE_DIR.parent, "photos.json"
+)
 
 
 def fetch_photos(start: int = 0, limit: int = None):
@@ -76,6 +79,9 @@ def download_photo(filename: str, URL: str):
     """
     URL = URL + ".png"
     r = requests.get(URL, stream=True)
+    print(f"DIR: {PHOTOS_DIR}{filename}")
+    if not os.path.exists(PHOTOS_DIR):
+        os.makedirs(PHOTOS_DIR)
     if r.status_code != 200:
         raise RequestAborted()
     with open(f"{PHOTOS_DIR}{filename}", 'wb') as f:
@@ -91,9 +97,9 @@ def get_photo_name_from_url(URL: str) -> str:
         URL: URL to photo.
 
     Returns:
-        String containing everything that is after '.com' in URL + '.png'.
+        String containing everything that is after last '/' in URL + '.png'.
     """
-    return URL.partition(".com")[2] + ".png"
+    return f"/{URL.rpartition('/')[-1]}.png"
 
 
 def import_photos(photos: list[dict]):
@@ -105,6 +111,7 @@ def import_photos(photos: list[dict]):
     """
     for photo in photos:
         name = get_photo_name_from_url(photo["url"])
+        print(name)
         # Probably it would be better to use async
         download_photo(name, photo["url"])
         data = {

@@ -1,11 +1,11 @@
 from PIL import Image
-from pathlib import Path
+import os
 
 from django.conf import settings
 from django.core.exceptions import ValidationError
 
 
-PHOTOS_DIR = f"{Path(settings.BASE_DIR).parent.parent}/photos"
+PHOTOS_DIR = os.path.join(settings.BASE_DIR.parent, "photos")
 
 
 def get_size(URL: str) -> tuple[int, int]:
