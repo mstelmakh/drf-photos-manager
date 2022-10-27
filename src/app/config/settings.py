@@ -30,7 +30,7 @@ INSTALLED_APPS = [
     'rest_framework',
 
     'photos.apps.PhotosConfig',
-    'fetching',
+    'imports',
 ]
 
 MIDDLEWARE = [
