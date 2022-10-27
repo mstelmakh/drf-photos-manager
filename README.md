@@ -55,6 +55,7 @@ GET /api/photos/import/from-json?start=3&limit=10
 
 ### Import using CLI
 `python3 src/app/manage.py import_photos_api`
-`python3 src/app/manage.py import_photos_json`
+
+`python3 src/app/manage.py import_photos_json --f=filename.json`
 
 For slicing use `--start` and `--limit` parameters.
