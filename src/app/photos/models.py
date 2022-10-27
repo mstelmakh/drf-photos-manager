@@ -17,8 +17,10 @@ class Photo(models.Model):
     height = models.IntegerField()
     color = HexField(verbose_name="Dominant color")
 
-    # Basically it's just a path to local file,
-    # so we can use CharField, not URLField
+    # Not sure about the type of the field.
+    # Task says we should store photo's url.
+    # I assume it means that we don't need to store the image itself.
+    # Otherwise we could use ImageField and store image as a media file.
     URL = models.CharField(max_length=200)
 
     @save_analyzed_photo
