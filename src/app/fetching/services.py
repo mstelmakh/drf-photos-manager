@@ -60,7 +60,7 @@ def read_photos_from_json(
     """
     with open(path, "r") as f:
         data = json.load(f)
-    return data[start:] if not limit else data[start:start+limit]
+    return data if not limit else data[start:start+limit]
 
 
 def download_photo(filename: str, URL: str):
@@ -105,6 +105,7 @@ def import_photos(photos: list[dict]):
     """
     for photo in photos:
         name = get_photo_name_from_url(photo["url"])
+        # Probably it would be better to use async
         download_photo(name, photo["url"])
         data = {
             "title": photo["title"],

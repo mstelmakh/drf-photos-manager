@@ -12,8 +12,6 @@ router.register('photos', views.PhotoView)
 
 urlpatterns = [
     path('', include(router.urls)),
-    path('photos/import/api/all/', ImportPhotosFromApi.as_view()),
-    path('photos/import/api/<int:n>/', ImportPhotosFromApi.as_view()),
-    path('photos/import/json/all/', ImportPhotosFromJson.as_view()),
-    path('photos/import/json/<int:n>/', ImportPhotosFromJson.as_view()),
+    path('photos/import-from-api', ImportPhotosFromApi.as_view()),
+    path('photos/import-from-json', ImportPhotosFromJson.as_view()),
 ]
