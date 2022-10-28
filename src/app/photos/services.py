@@ -22,7 +22,7 @@ def get_size(URL: str) -> tuple[int, int]:
         ValidationError: When there's no image with given path.
     """
     try:
-        with Image.open(f"{PHOTOS_DIR}{URL}") as img:
+        with Image.open(os.path.join(PHOTOS_DIR, URL)) as img:
             width, height = img.size
     except FileNotFoundError:
         raise ValidationError({"URL": "Invalid path."})
@@ -44,7 +44,7 @@ def get_dominant_color(URL: str) -> str:
         ValidationError: When there's no image with given path.
     """
     try:
-        img = Image.open(f"{PHOTOS_DIR}{URL}")
+        img = Image.open(os.path.join(PHOTOS_DIR, URL))
     except FileNotFoundError:
         raise ValidationError({"URL": "Invalid path."})
     img = img.copy()

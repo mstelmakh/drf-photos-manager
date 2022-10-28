@@ -38,7 +38,6 @@ def fetch_photos(start: int = 0, limit: int = None):
         'Content-Type':
         'application/json'
     })
-
     if r.status_code != 200:
         raise RequestAborted()
     photos = r.json()
@@ -79,12 +78,11 @@ def download_photo(filename: str, URL: str):
     """
     URL = URL + ".png"
     r = requests.get(URL, stream=True)
-    print(f"DIR: {PHOTOS_DIR}{filename}")
     if not os.path.exists(PHOTOS_DIR):
         os.makedirs(PHOTOS_DIR)
     if r.status_code != 200:
         raise RequestAborted()
-    with open(f"{PHOTOS_DIR}{filename}", 'wb') as f:
+    with open(os.path.join(PHOTOS_DIR, filename), 'wb') as f:
         r.raw.decode_content = True
         shutil.copyfileobj(r.raw, f)
 
@@ -99,7 +97,7 @@ def get_photo_name_from_url(URL: str) -> str:
     Returns:
         String containing everything that is after last '/' in URL + '.png'.
     """
-    return f"/{URL.rpartition('/')[-1]}.png"
+    return f"{URL.rpartition('/')[-1]}.png"
 
 
 def import_photos(photos: list[dict]):
@@ -111,7 +109,6 @@ def import_photos(photos: list[dict]):
     """
     for photo in photos:
         name = get_photo_name_from_url(photo["url"])
-        print(name)
         # Probably it would be better to use async
         download_photo(name, photo["url"])
         data = {
