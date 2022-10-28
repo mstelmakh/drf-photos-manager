@@ -59,3 +59,13 @@ GET /api/photos/import/from-json?start=3&limit=10
 `python3 src/app/manage.py import_photos_json --f=filename.json`
 
 For slicing use `--start` and `--limit` parameters.
+
+## Testing
+
+For testing use:
+
+`python3 src/app/manage.py test`
+
+For Docker:
+
+`make test`
